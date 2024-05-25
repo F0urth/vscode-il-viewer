@@ -6,7 +6,6 @@ using IlViewer.Core.ResultOutput;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
@@ -17,15 +16,8 @@ namespace IlViewer.Core
     {
         public static InspectionResult ExtractIl(string projectPath, string classFileName)
         {
-            if (string.IsNullOrEmpty(projectPath)) 
-            {
-                throw new ArgumentNullException(nameof(projectPath));
-            }
-            
-            if (string.IsNullOrEmpty(classFileName))
-            {
-                throw new ArgumentNullException(nameof(classFileName));
-            }
+            ArgumentNullException.ThrowIfNull(projectPath);
+            ArgumentNullException.ThrowIfNull(classFileName);
 
             var d = new DirectoryInfo(projectPath); 
             var fileToCompile = d.EnumerateFiles("*.cs", SearchOption.AllDirectories)
@@ -70,25 +62,23 @@ namespace IlViewer.Core
             var finalCompilation = compilation.AddReferences(references);
 
             var inspectionResult = new InspectionResult();
-            using (var assemblyStream = new MemoryStream())
+            using var assemblyStream = new MemoryStream();
+            var compilationResult = finalCompilation.Emit(assemblyStream);
+            if (!compilationResult.Success)
             {
-                var compilationResult = finalCompilation.Emit(assemblyStream);
-                if (!compilationResult.Success)
+                var errors = compilationResult.Diagnostics.Where(x => x.Severity == DiagnosticSeverity.Error).ToList();
+                foreach (var error in errors)
                 {
-                    var errors = compilationResult.Diagnostics.Where(x => x.Severity == DiagnosticSeverity.Error).ToList();
-                    foreach (var error in errors)
-                    {
-                        inspectionResult.AddError(error.GetMessage());
-                        Console.WriteLine(error.ToString());
-                    }
-
-                    if (inspectionResult.HasErrors) return inspectionResult;
+                    inspectionResult.AddError(error.GetMessage());
+                    Console.WriteLine(error.ToString());
                 }
 
-                assemblyStream.Seek(0, SeekOrigin.Begin);
-                InspectionResult finalResult = new InspectionResult { IlResults = GenerateIlFromStream (assemblyStream, classFileName) };
-                return finalResult;
+                if (inspectionResult.HasErrors) return inspectionResult;
             }
+
+            assemblyStream.Seek(0, SeekOrigin.Begin);
+            InspectionResult finalResult = new InspectionResult { IlResults = GenerateIlFromStream (assemblyStream, classFileName) };
+            return finalResult;
         }
 
         private static IList<InstructionResult> GenerateIlFromStream(Stream stream, string typeFullName)

@@ -7,7 +7,6 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import * as child_process from 'child_process';
 import * as fs from 'fs';
-import * as os from 'os';
 
 let child : child_process.ChildProcess;
 let logger = new Logger(message => console.log(message), "Info");
@@ -33,19 +32,10 @@ export async function activate(context: vscode.ExtensionContext) {
 			vscode.ViewColumn.Two,
             {}
 		);
-
-        
-        // panel.onDidDispose(
-        //     () => {
-        //         deactivate();
-        //     }
-        // );
-        
+ 
         let provider = new IntermediateLanguageContentProvider(panel);
         provider.provideTextDocumentContent();
     });
-
-
 }
 
 export function deactivate() {
