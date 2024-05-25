@@ -8,12 +8,14 @@ namespace IlViewer.Core;
 
 public static class RoslynClass
 {
-    public static Dictionary<string, Collection<Instruction>> GetiLInstructionsFromAssembly(AssemblyDefinition assembly, string typeName)
+    public static Dictionary<string, Collection<Instruction>> GetiLInstructionsFromAssembly(AssemblyDefinition assembly,
+        string typeName)
     {
         var ilInstructions = new Dictionary<string, Collection<Instruction>>();
         var typeDefinitions = assembly.MainModule.GetTypes().ToList();
 
-        var typeDefinition = typeDefinitions.Find(x => x.Name == typeName) ?? typeDefinitions.Find(x => x.Name.Contains(typeName) && x.HasGenericParameters);
+        var typeDefinition = typeDefinitions.Find(x => x.Name == typeName) ??
+                             typeDefinitions.Find(x => x.Name.Contains(typeName) && x.HasGenericParameters);
         if (typeDefinition is not null)
         {
             foreach (var method in typeDefinition.Methods)
@@ -43,11 +45,11 @@ public static class RoslynClass
             var ilProcessor = module?.EntryPoint?.Body?.GetILProcessor();
             if (ilProcessor != null)
             {
-                ilInstructions.Add(assembly.MainModule.EntryPoint.FullName, ilProcessor?.Body?.Instructions ?? new Collection<Instruction>());
+                ilInstructions.Add(assembly.MainModule.EntryPoint.FullName,
+                    ilProcessor?.Body?.Instructions ?? new Collection<Instruction>());
             }
         }
 
         return ilInstructions;
     }
-
 }

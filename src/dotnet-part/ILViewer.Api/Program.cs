@@ -33,4 +33,5 @@ static InspectionResult HandleIlRequest(IlRequest request)
         throw;
     }
 }
+
 app.Run();

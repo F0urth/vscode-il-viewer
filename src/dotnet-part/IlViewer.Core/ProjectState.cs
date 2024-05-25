@@ -16,7 +16,8 @@ namespace IlViewer.Core
 
         public ProjectContext ProjectContext { get; set; }
 
-        public Dictionary<string, MetadataReference> FileMetadataReferences { get; } = new Dictionary<string, MetadataReference>();
+        public Dictionary<string, MetadataReference> FileMetadataReferences { get; } =
+            new Dictionary<string, MetadataReference>();
 
         public Dictionary<string, ProjectId> ProjectReferences { get; } = new Dictionary<string, ProjectId>();
 

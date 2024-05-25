@@ -22,10 +22,10 @@ public static class IlGeneration
 
         var d = new DirectoryInfo(projectPath);
         var fileToCompile = d.EnumerateFiles("*.cs", SearchOption.AllDirectories)
-                             .Select(a => a.FullName)
-                             .FirstOrDefault(f => f.Contains(fileName));
+            .Select(a => a.FullName)
+            .FirstOrDefault(f => f.Contains(fileName));
         var dllFiles = d.EnumerateFiles("*.dll", SearchOption.AllDirectories)
-                        .Select(f => f.FullName).ToArray();
+            .Select(f => f.FullName).ToArray();
         var references = new List<PortableExecutableReference>();
         foreach (var dllFile in dllFiles)
         {
@@ -38,13 +38,14 @@ public static class IlGeneration
         var code = File.ReadAllText(fileToCompile);
         var tree = CSharpSyntaxTree.ParseText(code);
         var compilation = CSharpCompilation.Create("new").AddSyntaxTrees(tree);
-        var usings = compilation.SyntaxTrees.Select(tree => tree.GetRoot().ChildNodes().OfType<UsingDirectiveSyntax>()).SelectMany(s => s).ToArray();
+        var usings = compilation.SyntaxTrees.Select(tree => tree.GetRoot().ChildNodes().OfType<UsingDirectiveSyntax>())
+            .SelectMany(s => s).ToArray();
         foreach (var u in usings)
         {
             try
             {
-
-                references.Add(MetadataReference.CreateFromFile(Path.Combine(assemblyPath, u.Name.ToString() + ".dll")));
+                references.Add(
+                    MetadataReference.CreateFromFile(Path.Combine(assemblyPath, u.Name.ToString() + ".dll")));
             }
             catch
             {
@@ -81,7 +82,8 @@ public static class IlGeneration
         }
 
         assemblyStream.Seek(0, SeekOrigin.Begin);
-        InspectionResult finalResult = new InspectionResult { IlResults = GenerateIlFromStream(assemblyStream, fileName) };
+        InspectionResult finalResult = new InspectionResult
+            { IlResults = GenerateIlFromStream(assemblyStream, fileName) };
         return finalResult;
     }
 
