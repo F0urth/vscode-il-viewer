@@ -82,7 +82,7 @@ public static class IlGeneration
         }
 
         assemblyStream.Seek(0, SeekOrigin.Begin);
-        InspectionResult finalResult = new InspectionResult
+        var finalResult = new InspectionResult
             { IlResults = GenerateIlFromStream(assemblyStream, fileName) };
         return finalResult;
     }

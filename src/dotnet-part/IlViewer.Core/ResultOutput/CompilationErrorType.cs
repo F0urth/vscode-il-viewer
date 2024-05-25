@@ -1,8 +1,7 @@
-﻿namespace IlViewer.Core.ResultOutput
+﻿namespace IlViewer.Core.ResultOutput;
+
+public enum CompilationErrorType
 {
-    public enum CompilationErrorType
-    {
-        Warning,
-        Error
-    }
+    Warning,
+    Error
 }
