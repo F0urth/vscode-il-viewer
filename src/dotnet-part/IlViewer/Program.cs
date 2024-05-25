@@ -29,9 +29,9 @@ namespace IlViewer
 			Thread.Sleep(3000);
 			//Console.WriteLine("8 seconds later...");
 
-			using var stdin = Console.OpenStandardInput();
-			using var stdout = Console.OpenStandardOutput();
-			Console.WriteLine("Hello World");
+			using var stdin = System.Console.OpenStandardInput();
+			using var stdout = System.Console.OpenStandardOutput();
+			System.Console.WriteLine("Hello World");
 
 			var buffer = new byte[2048];
 			int bytes;

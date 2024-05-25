@@ -1,6 +1,3 @@
 ﻿namespace ILViewer.Api;
 
-public class IlRequest
-{
-    
-}
+public record IlRequest(string ProjectFilePath, string Filename);
