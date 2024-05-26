@@ -1,6 +1,7 @@
 using ILViewer.Api;
 using IlViewer.Core.ResultOutput;
 using IlViewer.Core;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,14 +23,14 @@ app.MapPost("il-viewer/il", HandleIlRequest);
 static InspectionResult HandleIlRequest(IlRequest request)
 {
     ArgumentNullException.ThrowIfNull(request);
-    Console.WriteLine(request);
+    Debug.WriteLine(request);
     try
     {
         return IlGeneration.ExtractIl(request.ProjectFilePath, request.Filename);
     }
     catch (Exception ex)
     {
-        Console.WriteLine(ex);
+        Debug.WriteLine(ex);
         throw;
     }
 }

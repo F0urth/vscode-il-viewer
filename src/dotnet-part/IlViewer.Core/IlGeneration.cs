@@ -21,11 +21,14 @@ public static class IlGeneration
         ArgumentNullException.ThrowIfNull(fileName);
 
         var d = new DirectoryInfo(projectPath);
+
         var fileToCompile = d.EnumerateFiles("*.cs", SearchOption.AllDirectories)
             .Select(a => a.FullName)
             .FirstOrDefault(f => f.Contains(fileName));
+
         var dllFiles = d.EnumerateFiles("*.dll", SearchOption.AllDirectories)
             .Select(f => f.FullName).ToArray();
+
         var references = new List<PortableExecutableReference>();
         foreach (var dllFile in dllFiles)
         {
@@ -83,7 +86,7 @@ public static class IlGeneration
 
         assemblyStream.Seek(0, SeekOrigin.Begin);
         var finalResult = new InspectionResult
-            { IlResults = GenerateIlFromStream(assemblyStream, fileName) };
+        { IlResults = GenerateIlFromStream(assemblyStream, fileName) };
         return finalResult;
     }
 
